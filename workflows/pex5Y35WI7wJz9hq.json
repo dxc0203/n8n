@@ -1,0 +1,113 @@
+{
+  "active": false,
+  "connections": {
+    "Google Drive": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-05-18T18:35:53.502Z",
+  "id": "pex5Y35WI7wJz9hq",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Video analysis",
+  "nodes": [
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "1pO840lfH6NDVu4ryn2uvxisaAuaH66NP",
+          "mode": "list",
+          "cachedResultName": "Designer registration and work management guidance video (New).mp4",
+          "cachedResultUrl": "https://drive.google.com/file/d/1pO840lfH6NDVu4ryn2uvxisaAuaH66NP/view?usp=drivesdk"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        220,
+        0
+      ],
+      "id": "75b62eca-9f0b-42ca-a0e5-8c0d00430942",
+      "name": "Google Drive",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "VI3T5DcaU4YavxxW",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=The following video has just been uploaded:\n\nTit\nLanguage: {{ $json[\"language\"] || \"English\" }}\nPurpose: {{ $json[\"purpose\"] || \"general summary\" }}\n\nPlease watch the video and generate a summary that includes:\n- A one-paragraph overall summary\n- Key bullet points with timestamps\n- Highlighted quotes (if any)\n- Any noticeable speaker tone or visual cues\n\nIf the video is not in English, translate the content into English before summarizing.\nThe video transcript is provided below:\n",
+        "options": {
+          "systemMessage": "You are a professional video content analyst. Your job is to watch videos uploaded by users, understand the key information, and return a clear, structured summary. The videos may vary in length and content, ranging from tutorials to promotional materials or interviews. Focus on the main message, tone, and any visual or verbal highlights. Always return output in Markdown format with proper formatting. If the video contains chapters or sections, reflect that structure in the summary."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.9,
+      "position": [
+        720,
+        0
+      ],
+      "id": "3a76847a-c63f-4cc5-a71a-221139ee94ee",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "ollama_quantised_llava-next-video-7b-dpo",
+          "mode": "list",
+          "cachedResultName": "ollama_quantised_llava-next-video-7b-dpo"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        480,
+        220
+      ],
+      "id": "b42bf096-0dee-4411-bea0-96e2237101c3",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "EtRgAWhJ8O5U58kp",
+          "name": "Local AI"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-05-19T01:34:58.968Z",
+  "versionId": "f9b0cbb9-144d-4e66-8b46-d4d2fb3273b5"
+}
