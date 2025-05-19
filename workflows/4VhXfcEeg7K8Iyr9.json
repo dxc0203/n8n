@@ -1,0 +1,323 @@
+{
+  "active": false,
+  "connections": {
+    "On clicking 'execute'": {
+      "main": [
+        [
+          {
+            "node": "n8n",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "n8n": {
+      "main": [
+        [
+          {
+            "node": "Limit1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [
+          {
+            "node": "Limit",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Execution Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "n8n",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute Workflow": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Limit": {
+      "main": [
+        [
+          {
+            "node": "BackupSuccessNotify",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execution Data": {
+      "main": [
+        [
+          {
+            "node": "Execute Workflow",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Limit1": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-05-19T20:01:06.548Z",
+  "id": "4VhXfcEeg7K8Iyr9",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "github backup",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "cd5ea913-4289-413f-b58b-780d71258551",
+      "name": "On clicking 'execute'",
+      "type": "n8n-nodes-base.manualTrigger",
+      "position": [
+        3860,
+        1980
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "filters": {},
+        "requestOptions": {}
+      },
+      "id": "a6502162-05d4-4902-9e92-81ecb0516d36",
+      "name": "n8n",
+      "type": "n8n-nodes-base.n8n",
+      "position": [
+        4040,
+        1980
+      ],
+      "typeVersion": 1,
+      "credentials": {
+        "n8nApi": {
+          "id": "m6tkCU8qizcxey0y",
+          "name": "n8n account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "5232f901-d852-4d18-9eef-5a05ae6927a1",
+      "name": "Loop Over Items",
+      "type": "n8n-nodes-base.splitInBatches",
+      "position": [
+        4440,
+        1980
+      ],
+      "typeVersion": 3
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {}
+          ]
+        }
+      },
+      "id": "0512054a-9249-4754-91ba-e0ef303e3517",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "position": [
+        3860,
+        2120
+      ],
+      "typeVersion": 1.2
+    },
+    {
+      "parameters": {
+        "content": "### Author Information and Resources\nCreator：Hochien Chang\nYouTube 頻道：[HC HumanizeAI](www.youtube.com/@HC-HumanizeAI)\nExplanation Video Link: https://youtu.be/PA15H5qunC0\n\n## Backup to GitHub \nThis workflow will backup all instance workflows to GitHub.\n\nThe files are saved `ID.json` for the filename.\n\n\n### Setup\nOpen `Globals` node and update the values below 👇\n\n- **repo.owner:** your Github username\n- **repo.name:** the name of your repository\n- **repo.path:** the folder to use within the repository. If it doesn't exist it will be created.\n\n\nIf your username was `john-doe` and your repository was called `n8n-backups` and you wanted the workflows to go into a `workflows` folder you would set:\n\n- repo.owner - john-doe\n- repo.name - n8n-backups\n- repo.path - workflows/\n\n\nThe workflow calls itself using a subworkflow, to help reduce memory usage.\n\nWorkflow base on:\n- https://n8n.io/workflows/2868-backup-your-workflows-to-github-in-subfolders/\n- https://n8n.io/workflows/2652-backup-your-workflows-to-github/",
+        "height": 761,
+        "width": 491,
+        "color": 4
+      },
+      "id": "16f73290-958a-4d62-a258-be20f3bbc263",
+      "name": "Sticky Note1",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        2820,
+        1520
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## Main workflow loop",
+        "height": 455,
+        "width": 1306,
+        "color": 7
+      },
+      "id": "217add1a-5592-4ed5-ba4a-ed274725d329",
+      "name": "Sticky Note2",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        3840,
+        1840
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "Zinxf8ET8bdQaMRP",
+          "mode": "list",
+          "cachedResultName": "Sub - Github Backup"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "mode": "each",
+        "options": {}
+      },
+      "id": "900879f9-155c-450c-8615-00331e82849e",
+      "name": "Execute Workflow",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "position": [
+        4780,
+        2100
+      ],
+      "typeVersion": 1.2
+    },
+    {
+      "parameters": {
+        "sendTo": "ultrclick.hc@gmail.com",
+        "subject": "n8n backup workflow success",
+        "message": "={{ $now }} n8n backup workflow success ",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        5020,
+        1960
+      ],
+      "id": "992034c6-73eb-47c3-b311-04d05c278258",
+      "name": "BackupSuccessNotify",
+      "webhookId": "e1ac4391-dfb4-46e2-ae8e-6411a0c55d0c"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.limit",
+      "typeVersion": 1,
+      "position": [
+        4780,
+        1960
+      ],
+      "id": "e64092d8-6930-40bb-9286-230ca0845618",
+      "name": "Limit"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.executionData",
+      "typeVersion": 1,
+      "position": [
+        4620,
+        2100
+      ],
+      "id": "14904449-f7ff-44cd-928a-aee6fc7115a2",
+      "name": "Execution Data"
+    },
+    {
+      "parameters": {
+        "content": "### 作者資訊與資源\n作者：Hochien Chang\nYouTube 頻道：[HC AI說人話](https://www.youtube.com/channel/UCvGfUB-wBdG4i_TdDGBCwJg)\n說明影片連結： https://youtu.be/PA15H5qunC0\n\n## 備份到 GitHub \n此工作流程會將所有實例工作流程備份到 GitHub。\n\n檔案名稱儲存為 `ID.json`。\n\n### 設定\n開啟 `Globals` 節點，並更新下列值 👇\n\n- **repo.owner:** 您的 Github 用戶名\n- **repo.name:** 您的版本庫名稱\n- **repo.path:** 儲存庫中要使用的資料夾。如果它不存在，則會被創建。\n\n\n如果您的用戶名是 `john-doe`，您的儲存庫名稱是 `n8n-backups`，而您希望工作流程放到 `workflows` 資料夾，您會設定：\n\n- repo.owner - HCAIChannel\n- repo.name - n8n-backups\n- repo.path - workflows/\n\n\n工作流程會使用子工作流程來呼叫自己，以幫助減少記憶體使用量。\n\n\nWorkflow base on:\n- https://n8n.io/workflows/2868-backup-your-workflows-to-github-in-subfolders/\n- https://n8n.io/workflows/2652-backup-your-workflows-to-github/",
+        "height": 761,
+        "width": 471,
+        "color": 4
+      },
+      "id": "2a4a3a98-c210-4be7-b781-0b9073104f5e",
+      "name": "Sticky Note4",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        3340,
+        1520
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "maxItems": 5
+      },
+      "type": "n8n-nodes-base.limit",
+      "typeVersion": 1,
+      "position": [
+        4260,
+        1980
+      ],
+      "id": "8116a60e-bf24-42db-a6e3-d75ef86d15a2",
+      "name": "Limit1"
+    },
+    {
+      "parameters": {
+        "content": "# HC AI 說人話",
+        "height": 80,
+        "width": 980,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        2820,
+        1420
+      ],
+      "typeVersion": 1,
+      "id": "7e95d37f-8f19-4f4c-9325-9c704f7dc0d2",
+      "name": "Sticky Note11",
+      "disabled": true
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-05-19T20:34:19.369Z",
+  "versionId": "5b19d6ee-01ea-43d6-b6ee-f45ac8c34753"
+}
