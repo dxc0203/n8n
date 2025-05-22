@@ -1,0 +1,216 @@
+{
+  "active": false,
+  "connections": {
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request - NewsAPI - Fashion",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request - NewsAPI - Fashion": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Convert to File1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "createdAt": "2025-05-19T21:52:10.281Z",
+  "id": "sxECgfPsJilO0eWl",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "AI MCP",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "7eaff168-78bb-4de2-a1f5-c4784d02300c",
+      "name": "When clicking ‘Test workflow’"
+    },
+    {
+      "parameters": {
+        "url": "https://newsapi.org/v2/everything",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "apiKey",
+              "value": "fb497f014657428f88e205a955b56e29"
+            },
+            {
+              "name": "q",
+              "value": "fashion-trends"
+            },
+            {
+              "name": "from",
+              "value": "={{ new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0] }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        220,
+        0
+      ],
+      "id": "a353be11-72f7-4b3d-9a09-1cc63bd49033",
+      "name": "HTTP Request - NewsAPI - Fashion"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=\nPlease analyze the following news article and extract the 4 most relevant English keywords.\n\nUse the structure defined by the system. Here's the news content:\n---\nSource: {{ $json.source.name }}\nTitle: {{ $json.title }}\nDescription: {{ $json.description }}\nURL: {{ $json.url }}\nPublishedAt: {{ $json.publishedAt }}\nContent: {{ $json.content }}",
+        "options": {
+          "systemMessage": "You are a multilingual AI assistant focused on fashion, culture, and business news analysis. Your task is to extract a structured JSON object from each English news article. Each output must be formatted cleanly with no explanations or extra text — only the JSON block.\n\n\"instruction\": \"Please extract 4 English keywords from the news content. Use this structure:\",\n  \"structure\": {\n    \"keywords\": [\n      \"1. Main person or company (e.g., 'Phoebe Gates')\",\n      \"2. Secondary person or product name (e.g., 'Phia')\",\n      \"3. Industry or trend tag (e.g., 'AI shopping')\",\n      \"4. Culture / market / region (e.g., 'Gen Z' or 'Spain')\"\n    ]\n  },\n  \"goal\": \"The keywords should enhance searchability and tag-based filtering in a fashion trend tracker.\"\n\nYour final JSON must follow this schema:\n```json\n{\n  \"source\": \"string\",\n  \"author\": \"string\",\n  \"title\": \"string\",\n  \"url\": \"string\",\n  \"keywords\": [\"keyword1\", \"keyword2\", \"keyword3\", \"keyword4\"],\n  \"description\": \"string\",\n  \"publishedAt\": \"YYYY-MM-DD\"\n}"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.9,
+      "position": [
+        660,
+        0
+      ],
+      "id": "3bc628f6-a730-416b-a200-baa3b826edcb",
+      "name": "AI Agent",
+      "executeOnce": false,
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "deepseek-r1-distill-qwen-7b",
+          "mode": "list",
+          "cachedResultName": "deepseek-r1-distill-qwen-7b"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        680,
+        240
+      ],
+      "id": "d861bd47-da21-42ab-8c6a-77d98ddaddb7",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "EtRgAWhJ8O5U58kp",
+          "name": "Local AI"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "articles",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        440,
+        0
+      ],
+      "id": "3410d33c-be3c-4588-979c-19bf57ab873f",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "jsCode": "const results = [];\n\nfor (const item of $input.all()) {\n  let text = item.json.output || '';\n\n  // 1. 移除 <think> 區塊\n  const parts = text.split(/<\\/think>/i);\n  const afterThink = parts.length > 1 ? parts[1].trim() : text.trim();\n\n  // 2. 嘗試抽出 JSON 區塊（包括 ```json ... ``` 或純 JSON）\n  const jsonMatch = afterThink.match(/```json\\s*([\\s\\S]+?)```|({[\\s\\S]+})/i);\n  const jsonText = jsonMatch ? (jsonMatch[1] || jsonMatch[2]).trim() : null;\n\n  // 3. 嘗試 parse JSON\n  try {\n    const parsed = JSON.parse(jsonText);\n    results.push({ json: parsed });\n  } catch (err) {\n    results.push({\n      json: {\n        error: 'JSON parsing failed',\n        raw: jsonText || '[No JSON found]'\n      }\n    });\n  }\n}\n\nreturn results;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1040,
+        0
+      ],
+      "id": "d6bc9be8-24c5-4af9-b13b-545e3ddb845c",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "operation": "xlsx",
+        "options": {
+          "fileName": "='Raw'+  {{ new Date(Date.now())}}"
+        }
+      },
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        700,
+        -240
+      ],
+      "id": "7b9a2410-5fba-4d5c-a4b5-20113590694e",
+      "name": "Convert to File1"
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-05-22T02:28:19.293Z",
+  "versionId": "1eb89287-2ba9-443d-bc24-b0cf1e533f55"
+}
